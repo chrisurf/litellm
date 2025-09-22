@@ -10,6 +10,11 @@ model_list:
       model: openai/gpt-4o
       api_key: os.environ/OPENAI_API_KEY
 
+  #  - model_name: lmstudio
+  #    litellm_params:
+  #      model: deepseek-r1-distill-llama-8b
+  #      api_base: "http://localhost:3333/v1"
+
   # - model_name: gpt-4-32k
   #   litellm_params:
   #     model: openai/gpt-4-32k
@@ -27,8 +32,19 @@ model_list:
   #     api_base: os.environ/AZURE_API_BASE
   #     api_key: os.environ/AZURE_API_KEY
   #     api_version: "2025-01-01-preview"
-
 # Optional: General settings
-# general_settings:
-#   master_key: os.environ/LITELLM_MASTER_KEY
-#   database_url: os.environ/DATABASE_URL
+general_settings:
+  master_key: os.environ/LITELLM_MASTER_KEY
+  database_url: os.environ/DATABASE_URL
+  store_model_in_db: true
+  
+  # UI Settings
+  ui_username: os.environ/UI_USERNAME
+  ui_password: os.environ/UI_PASSWORD
+  
+  # Optional: Additional settings
+  # max_budget: 100.0  # Set maximum spend limit
+  # budget_duration: "1mo"  # Budget reset period
+  # litellm_settings:
+  #   success_callback: ["langfuse"]  # Add logging callbacks
+  #   failure_callback: ["langfuse"]

@@ -1,21 +1,42 @@
-version: "3.9"
-
 services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: litellm-postgres
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
   litellm:
     image: ghcr.io/berriai/litellm:main-stable
     container_name: litellm-proxy
+    depends_on:
+      postgres:
+        condition: service_healthy
     ports:
       - "4000:4000"
     volumes:
       - ./litellm-config.yaml:/app/config.yaml
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      - LITELLM_MASTER_KEY=${LITELLM_MASTER_KEY}
+      - UI_USERNAME=${UI_USERNAME}
+      - UI_PASSWORD=${UI_PASSWORD}
+      - STORE_MODEL_IN_DB=True
       # Optional: Azure OpenAI configuration
       # - AZURE_API_KEY=${AZURE_API_KEY}
       # - AZURE_API_BASE=${AZURE_API_BASE}
-      # Optional: Add more environment variables as needed
-      # - LITELLM_MASTER_KEY=${LITELLM_MASTER_KEY}
-      # - DATABASE_URL=${DATABASE_URL}
     command: ["--config", "/app/config.yaml", "--port", "4000", "--num_workers", "8"]
     restart: unless-stopped
     healthcheck:
@@ -32,6 +53,9 @@ services:
   #   ports:
   #     - "6379:6379"
   #   restart: unless-stopped
+
+volumes:
+  postgres_data:
 
 # Optional: Networks configuration
 # networks:
