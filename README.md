@@ -17,8 +17,8 @@ litellm-docker-repo/
 ### 1. Clone and Setup
 
 ```bash
-git clone <your-repo-url>
-cd litellm-docker-repo
+git clone git@github.com:chrisurf/litellm.git
+cd litellm
 ```
 
 ### 2. Configure Environment Variables
@@ -218,4 +218,4 @@ Feel free to submit issues and enhancement requests!
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
