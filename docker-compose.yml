@@ -1,0 +1,39 @@
+version: "3.9"
+
+services:
+  litellm:
+    image: ghcr.io/berriai/litellm:main-stable
+    container_name: litellm-proxy
+    ports:
+      - "4000:4000"
+    volumes:
+      - ./litellm-config.yaml:/app/config.yaml
+    environment:
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      # Optional: Azure OpenAI configuration
+      # - AZURE_API_KEY=${AZURE_API_KEY}
+      # - AZURE_API_BASE=${AZURE_API_BASE}
+      # Optional: Add more environment variables as needed
+      # - LITELLM_MASTER_KEY=${LITELLM_MASTER_KEY}
+      # - DATABASE_URL=${DATABASE_URL}
+    command: ["--config", "/app/config.yaml", "--port", "4000", "--num_workers", "8"]
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Optional: Redis for caching (uncomment if needed)
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: litellm-redis
+  #   ports:
+  #     - "6379:6379"
+  #   restart: unless-stopped
+
+# Optional: Networks configuration
+# networks:
+#   litellm-network:
+#     driver: bridge
