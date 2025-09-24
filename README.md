@@ -162,6 +162,19 @@ model_list:
       api_version: "2025-01-01-preview"
 ```
 
+### 🏠 Local & Custom LLM Configuration
+
+For running local LLMs and custom deployments (Ollama, VLLM, LM Studio, etc.), see the comprehensive configuration guide:
+
+**➡️ [Custom LLM Configuration Guide](./CUSTOM_LLM_CONFIG.md)**
+
+The guide covers:
+- 🏠 **Local LLM Options** - Ollama, VLLM, LM Studio, and more
+- ⚙️ **Configuration Examples** - Mixed local/cloud setups
+- 🐳 **Docker Integration** - Local models with Docker Compose
+- 🎯 **Best Practices** - Performance optimization and resource management
+- 🛠️ **Troubleshooting** - Common issues and solutions
+
 ## 🔧 Advanced Features
 
 ### Web UI Management
