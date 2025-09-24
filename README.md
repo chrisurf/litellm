@@ -2,17 +2,6 @@
 
 A complete Docker setup for running [LiteLLM](https://docs.litellm.ai/) proxy server with PostgreSQL database, web UI, and support for multiple LLM providers including OpenAI, Azure OpenAI, and more.
 
-## 📁 Repository Structure
-
-```
-litellm-docker-repo/
-├── litellm-config.yaml    # LiteLLM configuration file
-├── docker-compose.yml     # Docker Compose with PostgreSQL
-├── .env.example          # Environment variables template
-├── LICENSE               # MIT License
-└── README.md             # This file
-```
-
 ## ✨ Features
 
 - 🐘 **PostgreSQL Database** - For persistent data, user management, and spend tracking
@@ -199,6 +188,19 @@ curl -X POST http://localhost:4000/key/generate \
     "duration": "30d"
   }'
 ```
+
+### 📖 REST API Reference
+
+For complete programmatic management of users, teams, and keys, see the comprehensive REST API documentation:
+
+**➡️ [LiteLLM REST API Reference](./LITELLM_REST_API.md)**
+
+The API reference includes:
+- 👥 **User Management** - Create, update, delete, and list users
+- 🏢 **Team Management** - Manage teams and team memberships  
+- 🔑 **Key Management** - Generate, update, and delete API keys
+- 📊 **Usage Tracking** - Monitor spending and usage analytics
+- 🔐 **Authentication** - Secure access with proper permissions
 
 ### Database Features
 
