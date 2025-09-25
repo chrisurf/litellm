@@ -8,6 +8,12 @@ A comprehensive REST API reference for managing LiteLLM proxy server configurati
 - [User Management](#user-management)
 - [Team Management](#team-management)
 - [Key Management](#key-management)
+- [Model Management](#model-management)
+- [Customer Management](#customer-management)
+- [Vector Store Management](#vector-store-management)
+- [MCP Management](#mcp-management)
+- [OpenAI-Compatible API](#openai-compatible-api)
+- [Administrative Features](#administrative-features)
 - [Common Response Formats](#common-response-formats)
 - [Error Handling](#error-handling)
 
@@ -551,6 +557,600 @@ curl -X POST 'http://localhost:4000/key/service-account/generate' \
       "type": "service_account"
     }
   }'
+```
+
+---
+
+## 🤖 Model Management
+
+### Add New Model
+
+**Endpoint:** `POST /model/new`  
+**Description:** Add a new model configuration to the proxy.
+
+```bash
+curl -X POST 'http://localhost:4000/model/new' \
+  -H 'Authorization: Bearer sk-1234' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "model_name": "custom-gpt-4",
+    "litellm_params": {
+      "model": "openai/gpt-4",
+      "api_key": "os.environ/OPENAI_API_KEY",
+      "api_base": "https://api.openai.com/v1"
+    },
+    "model_info": {
+      "description": "Custom GPT-4 configuration",
+      "max_tokens": 8192,
+      "cost_per_token": 0.00003
+    }
+  }'
+```
+
+**Parameters:**
+- `model_name` (string, required): Unique name for the model
+- `litellm_params` (object, required): Model configuration parameters
+- `model_info` (object, optional): Additional model metadata
+
+### Update Model Configuration
+
+**Endpoint:** `POST /model/update`  
+**Description:** Update an existing model's configuration.
+
+```bash
+curl -X POST 'http://localhost:4000/model/update' \
+  -H 'Authorization: Bearer sk-1234' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "model_name": "custom-gpt-4",
+    "litellm_params": {
+      "model": "openai/gpt-4-turbo",
+      "api_key": "os.environ/OPENAI_API_KEY"
+    },
+    "model_info": {
+      "description": "Updated to GPT-4 Turbo",
+      "max_tokens": 128000
+    }
+  }'
+```
+
+### Delete Model
+
+**Endpoint:** `POST /model/delete`  
+**Description:** Remove a model from the proxy configuration.
+
+```bash
+curl -X POST 'http://localhost:4000/model/delete' \
+  -H 'Authorization: Bearer sk-1234' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "model_name": "custom-gpt-4"
+  }'
+```
+
+### Get Model Information
+
+**Endpoint:** `GET /model/info`  
+**Description:** Get detailed information about a specific model.
+
+```bash
+curl -X GET 'http://localhost:4000/model/info?model_name=custom-gpt-4' \
+  -H 'Authorization: Bearer sk-1234'
+```
+
+**Response:**
+```json
+{
+  "model_name": "custom-gpt-4",
+  "litellm_params": {
+    "model": "openai/gpt-4-turbo",
+    "api_key": "os.environ/OPENAI_API_KEY"
+  },
+  "model_info": {
+    "description": "Updated to GPT-4 Turbo",
+    "max_tokens": 128000,
+    "cost_per_token": 0.00003
+  },
+  "created_at": "2024-01-15T10:30:00Z",
+  "updated_at": "2024-01-20T14:45:00Z"
+}
+```
+
+---
+
+## 👥 Customer Management
+
+### List Customers
+
+**Endpoint:** `GET /customer/list`  
+**Description:** List all customers/end-users in the system.
+
+```bash
+# List all customers with pagination
+curl -X GET 'http://localhost:4000/customer/list?page=1&page_size=10' \
+  -H 'Authorization: Bearer sk-1234'
+
+# Filter customers
+curl -X GET 'http://localhost:4000/customer/list?customer_email=user@company.com' \
+  -H 'Authorization: Bearer sk-1234'
+```
+
+**Query Parameters:**
+- `page` (integer, optional): Page number (default: 1)
+- `page_size` (integer, optional): Items per page (default: 10)
+- `customer_email` (string, optional): Filter by customer email
+- `customer_id` (string, optional): Filter by customer ID
+
+**Response:**
+```json
+{
+  "customers": [
+    {
+      "customer_id": "customer-123",
+      "customer_email": "user@company.com",
+      "spend": 45.75,
+      "total_requests": 1250,
+      "created_at": "2024-01-10T09:00:00Z",
+      "last_active": "2024-01-25T16:30:00Z"
+    }
+  ],
+  "total": 156,
+  "page": 1,
+  "page_size": 10,
+  "total_pages": 16
+}
+```
+
+### List End Users (Alternative Endpoint)
+
+**Endpoint:** `GET /end_user/list`  
+**Description:** Alternative endpoint for listing end-users with similar functionality.
+
+```bash
+curl -X GET 'http://localhost:4000/end_user/list?page=1&page_size=20' \
+  -H 'Authorization: Bearer sk-1234'
+```
+
+---
+
+## 🗂️ Vector Store Management
+
+**Note:** This is an Enterprise feature for vector store management.
+
+### Create Vector Store
+
+**Endpoint:** `POST /vector_store/new`  
+**Description:** Create a new vector store for document embeddings and retrieval.
+
+```bash
+curl -X POST 'http://localhost:4000/vector_store/new' \
+  -H 'Authorization: Bearer sk-1234' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "name": "company-docs",
+    "description": "Company documentation embeddings",
+    "embedding_model": "text-embedding-ada-002",
+    "metadata": {
+      "department": "engineering",
+      "document_type": "technical"
+    }
+  }'
+```
+
+**Parameters:**
+- `name` (string, required): Unique name for the vector store
+- `description` (string, optional): Description of the vector store
+- `embedding_model` (string, optional): Model to use for embeddings
+- `metadata` (object, optional): Additional metadata
+
+**Response:**
+```json
+{
+  "vector_store_id": "vs-abc123",
+  "name": "company-docs",
+  "description": "Company documentation embeddings",
+  "embedding_model": "text-embedding-ada-002",
+  "status": "active",
+  "created_at": "2024-01-25T10:30:00Z"
+}
+```
+
+### Delete Vector Store
+
+**Endpoint:** `POST /vector_store/delete`  
+**Description:** Delete a vector store and all associated data.
+
+```bash
+curl -X POST 'http://localhost:4000/vector_store/delete' \
+  -H 'Authorization: Bearer sk-1234' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "vector_store_id": "vs-abc123"
+  }'
+```
+
+### List Vector Stores
+
+**Endpoint:** `GET /vector_store/list`  
+**Description:** List all vector stores with filtering options.
+
+```bash
+curl -X GET 'http://localhost:4000/vector_store/list?status=active' \
+  -H 'Authorization: Bearer sk-1234'
+```
+
+**Query Parameters:**
+- `status` (string, optional): Filter by status (active, inactive)
+- `page` (integer, optional): Page number
+- `page_size` (integer, optional): Items per page
+
+**Response:**
+```json
+{
+  "vector_stores": [
+    {
+      "vector_store_id": "vs-abc123",
+      "name": "company-docs",
+      "description": "Company documentation embeddings",
+      "document_count": 1500,
+      "size_mb": 250.5,
+      "status": "active",
+      "created_at": "2024-01-25T10:30:00Z"
+    }
+  ],
+  "total": 5,
+  "page": 1,
+  "page_size": 10
+}
+```
+
+---
+
+## 🔧 MCP Management
+
+**Description:** Model Context Protocol (MCP) management for tool integration.
+
+### Get Available MCP Tools
+
+**Endpoint:** `GET /v1/mcp/tools`  
+**Description:** Get list of available MCP tools and their capabilities.
+
+```bash
+curl -X GET 'http://localhost:4000/v1/mcp/tools' \
+  -H 'Authorization: Bearer sk-1234'
+```
+
+**Response:**
+```json
+{
+  "tools": [
+    {
+      "name": "web_search",
+      "description": "Search the web for information",
+      "parameters": {
+        "query": {
+          "type": "string",
+          "description": "Search query"
+        },
+        "max_results": {
+          "type": "integer",
+          "description": "Maximum number of results"
+        }
+      }
+    },
+    {
+      "name": "code_executor",
+      "description": "Execute code in various languages",
+      "parameters": {
+        "code": {
+          "type": "string",
+          "description": "Code to execute"
+        },
+        "language": {
+          "type": "string",
+          "description": "Programming language"
+        }
+      }
+    }
+  ]
+}
+```
+
+---
+
+## 🔌 OpenAI-Compatible API
+
+LiteLLM provides full OpenAI API compatibility. All endpoints use the same format as OpenAI's API.
+
+### Core LLM APIs
+
+#### Chat Completions
+```bash
+curl -X POST 'http://localhost:4000/v1/chat/completions' \
+  -H 'Authorization: Bearer sk-1234' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "model": "gpt-4",
+    "messages": [{"role": "user", "content": "Hello!"}],
+    "temperature": 0.7,
+    "max_tokens": 100
+  }'
+```
+
+#### Text Completions
+```bash
+curl -X POST 'http://localhost:4000/v1/completions' \
+  -H 'Authorization: Bearer sk-1234' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "model": "gpt-3.5-turbo-instruct",
+    "prompt": "Once upon a time",
+    "max_tokens": 50
+  }'
+```
+
+#### Embeddings
+```bash
+curl -X POST 'http://localhost:4000/v1/embeddings' \
+  -H 'Authorization: Bearer sk-1234' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "model": "text-embedding-ada-002",
+    "input": "The quick brown fox jumps over the lazy dog"
+  }'
+```
+
+#### Content Moderation
+```bash
+curl -X POST 'http://localhost:4000/v1/moderations' \
+  -H 'Authorization: Bearer sk-1234' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "input": "I want to hurt someone"
+  }'
+```
+
+### Advanced Features
+
+#### Image Generation
+```bash
+curl -X POST 'http://localhost:4000/v1/images/generations' \
+  -H 'Authorization: Bearer sk-1234' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "prompt": "A futuristic city skyline",
+    "n": 1,
+    "size": "1024x1024"
+  }'
+```
+
+#### Speech-to-Text
+```bash
+curl -X POST 'http://localhost:4000/v1/audio/transcriptions' \
+  -H 'Authorization: Bearer sk-1234' \
+  -F 'file=@audio.mp3' \
+  -F 'model=whisper-1'
+```
+
+#### Text-to-Speech
+```bash
+curl -X POST 'http://localhost:4000/v1/audio/speech' \
+  -H 'Authorization: Bearer sk-1234' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "model": "tts-1",
+    "input": "Hello, this is a test of text to speech.",
+    "voice": "alloy"
+  }'
+```
+
+#### Fine-tuning Management
+```bash
+# Create fine-tuning job
+curl -X POST 'http://localhost:4000/v1/fine_tuning/jobs' \
+  -H 'Authorization: Bearer sk-1234' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "training_file": "file-abc123",
+    "model": "gpt-3.5-turbo"
+  }'
+
+# List fine-tuning jobs
+curl -X GET 'http://localhost:4000/v1/fine_tuning/jobs' \
+  -H 'Authorization: Bearer sk-1234'
+```
+
+#### Assistants API
+```bash
+# Create assistant
+curl -X POST 'http://localhost:4000/v1/assistants' \
+  -H 'Authorization: Bearer sk-1234' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "model": "gpt-4",
+    "name": "Customer Support Assistant",
+    "instructions": "You are a helpful customer support assistant."
+  }'
+
+# Create thread
+curl -X POST 'http://localhost:4000/v1/threads' \
+  -H 'Authorization: Bearer sk-1234' \
+  -H 'Content-Type: application/json' \
+  -d '{}'
+```
+
+### Batch Processing
+```bash
+# Create batch job
+curl -X POST 'http://localhost:4000/v1/batches' \
+  -H 'Authorization: Bearer sk-1234' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "input_file_id": "file-abc123",
+    "endpoint": "/v1/chat/completions",
+    "completion_window": "24h"
+  }'
+```
+
+---
+
+## ⚙️ Administrative Features
+
+### Configuration Management
+
+#### Health Check
+```bash
+curl -X GET 'http://localhost:4000/health' \
+  -H 'Authorization: Bearer sk-1234'
+```
+
+**Response:**
+```json
+{
+  "status": "healthy",
+  "database": "connected",
+  "models": "loaded",
+  "uptime": "2d 14h 23m",
+  "version": "1.0.0"
+}
+```
+
+#### Prometheus Metrics
+```bash
+curl -X GET 'http://localhost:4000/metrics' \
+  -H 'Authorization: Bearer sk-1234'
+```
+
+#### Configuration Updates
+```bash
+# Update proxy configuration
+curl -X POST 'http://localhost:4000/config/update' \
+  -H 'Authorization: Bearer sk-1234' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "general_settings": {
+      "max_budget": 1000.0,
+      "budget_duration": "30d"
+    }
+  }'
+```
+
+### Global Operations
+
+#### Global Spend Reset
+```bash
+curl -X POST 'http://localhost:4000/global/spend/reset' \
+  -H 'Authorization: Bearer sk-1234' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "confirm": true,
+    "reset_type": "monthly"
+  }'
+```
+
+#### Memory Usage Monitoring
+```bash
+curl -X GET 'http://localhost:4000/global/memory/usage' \
+  -H 'Authorization: Bearer sk-1234'
+```
+
+**Response:**
+```json
+{
+  "memory_usage_mb": 2048,
+  "memory_limit_mb": 4096,
+  "cpu_usage_percent": 45.2,
+  "active_connections": 127,
+  "cache_size_mb": 512
+}
+```
+
+### Audit and Monitoring
+
+#### Audit Logs
+```bash
+# Get audit logs with filtering
+curl -X GET 'http://localhost:4000/audit/logs?action=create&table_name=user&limit=50' \
+  -H 'Authorization: Bearer sk-1234'
+```
+
+**Response:**
+```json
+{
+  "audit_logs": [
+    {
+      "id": "audit-123",
+      "table_name": "user",
+      "object_id": "user-456",
+      "action": "create",
+      "changed_by": "admin-user",
+      "changed_at": "2024-01-25T10:30:00Z",
+      "before_value": null,
+      "after_value": {
+        "user_email": "new@company.com",
+        "user_role": "internal_user"
+      }
+    }
+  ],
+  "total": 1,
+  "page": 1,
+  "page_size": 50
+}
+```
+
+**Tracked Actions:**
+- `create` - Entity creation
+- `update` - Entity modification  
+- `delete` - Entity deletion
+- `regenerate` - Key regeneration
+
+**Tracked Entities:**
+- Users
+- Teams
+- API Keys
+- Models
+- Vector Stores
+
+### Access Control Configuration
+
+#### Endpoint Security Settings
+
+**Environment Variables:**
+```bash
+# Disable admin/management endpoints
+DISABLE_ADMIN_ENDPOINTS=true
+
+# Disable LLM API endpoints
+DISABLE_LLM_API_ENDPOINTS=true
+
+# Enable only specific endpoint categories
+ENABLE_ENDPOINTS=user_management,key_management
+```
+
+#### Role-Based Access Control
+```bash
+# Check user permissions
+curl -X GET 'http://localhost:4000/user/permissions?user_id=user-456' \
+  -H 'Authorization: Bearer sk-1234'
+```
+
+**Response:**
+```json
+{
+  "user_id": "user-456",
+  "role": "internal_user",
+  "permissions": [
+    "key:generate",
+    "key:info",
+    "model:list",
+    "chat:completions"
+  ],
+  "restricted_endpoints": [
+    "user:delete",
+    "team:create",
+    "model:delete"
+  ]
+}
 ```
 
 ---
