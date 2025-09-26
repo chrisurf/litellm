@@ -4,12 +4,14 @@ This guide covers how to configure and use local LLMs and custom deployments wit
 
 ## 📋 Table of Contents
 
-- [Overview](#overview)
-- [Local LLM Options](#local-llm-options)
-- [Configuration Examples](#configuration-examples)
-- [Proxy Server Setup](#proxy-server-setup)
-- [Best Practices](#best-practices)
-- [Troubleshooting](#troubleshooting)
+- [Overview](#-overview)
+- [Local LLM Options](#-local-llm-options)
+- [Configuration Examples](#%EF%B8%8F-configuration-examples)
+- [Proxy Server Setup](#-proxy-server-setup)
+- [Best Practices](#-best-practices)
+- [Troubleshooting](#%EF%B8%8F-troubleshooting)
+- [Performance Considerations](#-performance-considerations)
+- [Additional Resources](#-additional-resources)
 
 ## 🏠 Overview
 

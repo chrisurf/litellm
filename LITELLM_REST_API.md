@@ -4,18 +4,18 @@ A comprehensive REST API reference for managing LiteLLM proxy server configurati
 
 ## 📋 Table of Contents
 
-- [Authentication](#authentication)
-- [User Management](#user-management)
-- [Team Management](#team-management)
-- [Key Management](#key-management)
-- [Model Management](#model-management)
-- [Customer Management](#customer-management)
-- [Vector Store Management](#vector-store-management)
-- [MCP Management](#mcp-management)
-- [OpenAI-Compatible API](#openai-compatible-api)
-- [Administrative Features](#administrative-features)
-- [Common Response Formats](#common-response-formats)
-- [Error Handling](#error-handling)
+- [Authentication](#-authentication)
+- [User Management](#-user-management)
+- [Team Management](#-team-management)
+- [Key Management](#-key-management)
+- [Model Management](#-model-management)
+- [Customer Management](#-customer-management)
+- [Vector Store Management](#%EF%B8%8F-vector-store-management)
+- [MCP Management](#-mcp-management)
+- [OpenAI-Compatible API](#-openai-compatible-api)
+- [Administrative Features](#%EF%B8%8F-administrative-features)
+- [Common Response Formats](#-common-response-formats)
+- [Error Handling](#-error-handling)
 
 ## 🔐 Authentication
 
